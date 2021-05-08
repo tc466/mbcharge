@@ -1,0 +1,55 @@
+#!/bin/bash
+
+SMC_KEY="CH0C"
+ON_VALUE="00"
+OFF_VALUE="01"
+
+usage() {
+    echo "mbcharge - command line utility to control MacBook battery charging"
+    echo
+    echo "Usage:"
+    echo "  mbcharge on"
+    echo "    Enables battery charging"
+    echo
+    echo "  mbcharge off"
+    echo "    Disables battery charging"
+    echo
+    echo "  mbcharge status"
+    echo "    Show battery charging status"
+}
+
+get_smc_value() {
+    # Example smc command output: "  CH0C  [hex_]  (bytes 01)"
+    # Extract the raw value from output string
+    smc -k $SMC_KEY -r | sed -nE 's/^.+\(bytes ([0-9a-f]+)\)/\1/p'
+}
+
+status() {
+    if [[ $(get_smc_value) == $ON_VALUE ]]; then
+        echo "Battery charging is enabled."
+    else
+        echo "Battery charging is disabled."
+    fi
+}
+
+enable() {
+    sudo smc -k $SMC_KEY -w $ON_VALUE
+}
+
+disable() {
+    sudo smc -k $SMC_KEY -w $OFF_VALUE
+}
+
+if [[ $# -eq 0 || $1 = "help" ]]; then
+    usage
+elif [[ $1 = status ]]; then
+    status
+elif [[ $1 = on ]]; then
+    if [[ $(get_smc_value) != $ON_VALUE ]]; then
+        enable
+    fi
+elif [[ $1 = off ]]; then
+    if [[ $(get_smc_value) != $OFF_VALUE ]]; then
+        disable
+    fi
+fi
