@@ -2,7 +2,7 @@
 
 Command line utility to control MacBook battery charging
 
-Leaving lithium-ion batteries fully charged leads to faster aging of reduced
+Leaving lithium-ion batteries fully charged leads to faster aging and reduced
 lifespan of the batteries. Apple introduced the [Optimized Battery Charging][optimized-battery-charing]
 feature in macOS Big Sur to delay charging the battery past 80% until needed.
 However, the feature relies on machine learning to generate schedules, and user
