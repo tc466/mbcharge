@@ -8,10 +8,10 @@ usage() {
     echo "mbcharge - command line utility to control MacBook battery charging"
     echo
     echo "Usage:"
-    echo "  mbcharge on"
+    echo "  mbcharge enable"
     echo "    Enables battery charging"
     echo
-    echo "  mbcharge off"
+    echo "  mbcharge disable"
     echo "    Disables battery charging"
     echo
     echo "  mbcharge status"
@@ -40,16 +40,22 @@ disable() {
     sudo smc -k $SMC_KEY -w $OFF_VALUE
 }
 
-if [[ $# -eq 0 || $1 = "help" ]]; then
-    usage
-elif [[ $1 = status ]]; then
-    status
-elif [[ $1 = on ]]; then
-    if [[ $(get_smc_value) != $ON_VALUE ]]; then
-        enable
-    fi
-elif [[ $1 = off ]]; then
-    if [[ $(get_smc_value) != $OFF_VALUE ]]; then
-        disable
-    fi
-fi
+case "$1" in
+    enable)
+        if [[ $(get_smc_value) != $ON_VALUE ]]; then
+            enable
+        fi
+        ;;
+    disable)
+        if [[ $(get_smc_value) != $OFF_VALUE ]]; then
+            disable
+        fi
+        ;;
+    status)
+        status
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac
