@@ -23,10 +23,10 @@ place it in your $PATH.
 ## Usage
 
 ```
-$ mbcharge on
+$ mbcharge enable
     Enables battery charging
 
-$ mbcharge off
+$ mbcharge disable
     Disables battery charging
 
 $ mbcharge status
