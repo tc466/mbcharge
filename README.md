@@ -18,8 +18,8 @@ MacBooks.
 ## Prerequisites
 
 You need the smc [command line tool][smc-command]
-from [smcFanControl][smcFanControl]. Compile the command line tool and
-place it in your $PATH.
+from [smcFanControl][smcFanControl]. A precompiled copy is provided in this
+repository. Please download and put it in your $PATH together with the script.
 
 ## Usage
 
