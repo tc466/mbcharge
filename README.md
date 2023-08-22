@@ -9,10 +9,11 @@ However, the feature relies on machine learning to generate schedules, and user
 can't control when the battery starts and stops charging. This tool is for those who want more
 manual control.
 
-The utility allows turning on / off battery charging for MacBooks (including
-MacBook Pro/Air with Apple Silicon). Note that it may not work on older
+The utility allows turning on / off battery charging, and hold / unhold battery
+at 80% for Apple Silicon MacBooks. Note that it does not work on older
 generations of MacBooks (which uses a different mechanism to control battery
-charging). Please use [bclm][bclm] or [AlDente][AlDente] instead for older MacBooks.
+charging). Please use [bclm][bclm] or [AlDente][AlDente] instead for older
+MacBooks.
 
 ## Prerequisites
 
@@ -29,8 +30,14 @@ $ mbcharge enable
 $ mbcharge disable
     Disables battery charging
 
+$ mbcharge hold
+    Hold battery charge at 80%
+
+$ mbcharge unhold
+    Stop holding battery charge
+
 $ mbcharge status
-    Show battery charging status
+    Show battery charging and hold status
 ```
 
 [optimized-battery-charing]: https://support.apple.com/guide/macbook-pro/charge-the-battery-apdbc13fd966/mac

@@ -1,8 +1,11 @@
 #!/bin/bash
 
-SMC_KEY="CH0C"
-ON_VALUE="00"
-OFF_VALUE="01"
+SMC_CHARGE_KEY="CH0C"
+CHARGE_ON_VALUE="00"
+CHARGE_OFF_VALUE="01"
+SMC_HOLD_KEY="CHWA"
+HOLD_ON_VALUE="01"
+HOLD_OFF_VALUE="00"
 
 usage() {
     echo "mbcharge - command line utility to control MacBook battery charging"
@@ -14,41 +17,70 @@ usage() {
     echo "  mbcharge disable"
     echo "    Disables battery charging"
     echo
+    echo "  mbcharge hold"
+    echo "    Hold battery charge at 80%"
+    echo
+    echo "  mbcharge unhold"
+    echo "    Stop holding battery charge"
+    echo
     echo "  mbcharge status"
-    echo "    Show battery charging status"
+    echo "    Show battery charging and hold status"
 }
 
 get_smc_value() {
     # Example smc command output: "  CH0C  [hex_]  (bytes 01)"
     # Extract the raw value from output string
-    smc -k $SMC_KEY -r | sed -nE 's/^.+\(bytes ([0-9a-f]+)\)/\1/p'
+    smc -k $1 -r | sed -nE 's/^.+\(bytes ([0-9a-f]+)\)/\1/p'
 }
 
 status() {
-    if [[ $(get_smc_value) == $ON_VALUE ]]; then
+    if [[ $(get_smc_value ${SMC_CHARGE_KEY}) == ${CHARGE_ON_VALUE} ]]; then
         echo "Battery charging is enabled."
     else
         echo "Battery charging is disabled."
     fi
+    if [[ $(get_smc_value ${SMC_HOLD_KEY}) == ${HOLD_ON_VALUE} ]]; then
+        echo "Battery hold is enabled."
+    else
+        echo "Battery hold is disabled."
+    fi
 }
 
 enable() {
-    sudo smc -k $SMC_KEY -w $ON_VALUE
+    sudo smc -k ${SMC_CHARGE_KEY} -w ${CHARGE_ON_VALUE}
 }
 
 disable() {
-    sudo smc -k $SMC_KEY -w $OFF_VALUE
+    sudo smc -k ${SMC_CHARGE_KEY} -w ${CHARGE_OFF_VALUE}
+}
+
+hold() {
+    sudo smc -k ${SMC_HOLD_KEY} -w ${HOLD_ON_VALUE}
+}
+
+unhold() {
+    sudo smc -k ${SMC_HOLD_KEY} -w ${HOLD_OFF_VALUE}
 }
 
 case "$1" in
     enable)
-        if [[ $(get_smc_value) != $ON_VALUE ]]; then
+        if [[ $(get_smc_value ${SMC_CHARGE_KEY}) != ${CHARGE_ON_VALUE} ]]; then
             enable
         fi
         ;;
     disable)
-        if [[ $(get_smc_value) != $OFF_VALUE ]]; then
+        if [[ $(get_smc_value ${SMC_CHARGE_KEY}) != ${CHARGE_OFF_VALUE} ]]; then
             disable
+        fi
+        ;;
+    hold)
+        if [[ $(get_smc_value ${SMC_HOLD_KEY}) != ${HOLD_ON_VALUE} ]]; then
+            hold
+        fi
+        ;;
+    unhold)
+        if [[ $(get_smc_value ${SMC_HOLD_KEY}) != ${HOLD_OFF_VALUE} ]]; then
+            unhold
         fi
         ;;
     status)
